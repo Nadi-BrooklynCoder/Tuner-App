@@ -1,23 +1,30 @@
 const express = require("express");
-const songs = express.Router();
-const { getAllSongs, getSong, createSong, deleteSong, updateSong } = require("../queries/song");
+
+const songs = express.Router({ mergeParams: true });
+
+const { getArtist } = require('../queries/artists');
+
+const { getAllSongs, getSong, createSong, deleteSong, updateSong } = require("../queries/songs");
 
 songs.get("/", async (req, res) => {
-    const allSongs = await getAllSongs();
+    const { artist_id } = req.params;
+    const songs = await getAllSongs(artist_id);
+    const artist = await getArtist(artist_id);
 
-    if(allSongs[0]){
-    res.status(200).json(allSongs);
+    if(artist.id){
+    res.status(200).json({ ...artist, songs });
     } else {
         res.status(500).json( { error: "Server Error" });
     };
 });
 
 songs.get("/:id", async (req, res) => {
-    const { id } = req.params;
-    const singleSong = await getSong(id);
+    const { artist_id, id } = req.params;
+    const song = await getSong(id);
+    const artist = await getArtist(artist_id)
 
-    if(singleSong) {
-        res.status(200).json(singleSong);
+    if(song) {
+        res.status(200).json({ ...artist, song });
     } else {
         res.status(404).json({ error: "Song not found."})
     }
