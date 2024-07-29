@@ -1,9 +1,6 @@
 const express = require("express");
-
 const songs = express.Router({ mergeParams: true });
-
 const { getArtist } = require('../queries/artists');
-
 const { getAllSongs, getSong, createSong, deleteSong, updateSong } = require("../queries/songs");
 
 songs.get("/", async (req, res) => {
@@ -31,9 +28,9 @@ songs.get("/:id", async (req, res) => {
 });
 
 songs.post("/", async (req, res) => {
-    const newSong = await createSong(req.body);
-
-    res.status(201).json(newSong);
+    const { artist_id } = req.params
+    const song = await createSong({...req.body, artist_id});
+    res.status(200).json(song);
 });
 
 songs.delete("/:id", async (req, res) => {

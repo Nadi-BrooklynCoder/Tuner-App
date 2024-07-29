@@ -9,6 +9,8 @@ CREATE TABLE artists (
     name TEXT NOT NULL
 );
 
+DROP TABLE IF EXISTS songs;
+
 CREATE TABLE songs (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
